@@ -1,0 +1,89 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from google.colab import drive
+drive.mount('/content/drive')
+df = pd.read_csv('/content/drive/MyDrive/Bollywood/data.csv')
+print(df)
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset
+#df = pd.read_csv("data.csv")
+df = pd.read_csv('/content/drive/MyDrive/Bollywood/data.csv')
+
+# Clean column names
+df.columns = df.columns.str.strip().str.replace(' ', '')
+
+# Question 1
+print("Q1: Number of Records =", len(df))
+print("\nMetadata:")
+print(df.info())
+
+# Question 2
+q2 = df['Genre'].value_counts()
+print("\nQ2: Movies released by genre:\n", q2)
+print("Genre with most releases:", q2.idxmax())
+
+# Question 3
+q3 = pd.crosstab(df['Genre'], df['ReleaseTime'])
+print("\nQ3: Cross-tab of Genre vs ReleaseTime:\n", q3)
+
+# Question 4
+df['ReleaseDate'] = pd.to_datetime(df['SlNo'], errors='coerce')
+df['Month'] = df['ReleaseDate'].dt.month
+q4 = df['Month'].value_counts().sort_values(ascending=False)
+print("\nQ4: Month with most releases:", q4.idxmax())
+
+# Question 5
+high_budget = df[df['Budget'] >= 25]
+q5 = high_budget['Month'].value_counts()
+print("\nQ5: Month with most high-budget movies (>=25 crore):", q5.idxmax())
+
+# Question 6
+df['ROI'] = (df['BoxOfficeCollection'] - df['Budget']) / df['Budget']
+q6 = df[['MovieName', 'ROI']].sort_values(by='ROI', ascending=False).head(10)
+print("\nQ6: Top 10 Movies by ROI:\n", q6)
+
+# Question 7
+q7 = df.groupby('ReleaseTime')['ROI'].mean().sort_values(ascending=False)
+print("\nQ7: Avg ROI by Release Time:\n", q7)
+
+# Question 8
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+sns.histplot(df['Budget'], bins=30)
+plt.title("Histogram of Movie Budgets")
+
+plt.subplot(1, 2, 2)
+sns.kdeplot(df['Budget'], shade=True)
+plt.title("Distribution of Movie Budgets")
+plt.tight_layout()
+plt.show()
+
+# Question 9
+subset = df[df['Genre'].isin(['Comedy', 'Drama'])]
+plt.figure(figsize=(8, 5))
+sns.boxplot(data=subset, x='Genre', y='ROI')
+plt.title("ROI Comparison: Comedy vs Drama")
+plt.show()
+
+# Question 10
+corr = df['BoxOfficeCollection'].corr(df['YoutubeLikes'])
+print("\nQ10: Correlation between BoxOfficeCollection and YoutubeLikes =", corr)
+
+# Question 11
+plt.figure(figsize=(14, 6))
+sns.boxplot(data=df, x='Genre', y='YoutubeLikes')
+plt.title("YouTube Likes by Genre")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Question 12
+num_cols = ['Budget', 'BoxOfficeCollection', 'YoutubeViews', 'YoutubeLikes', 'YoutubeDislikes']
+print("\nQ12: Correlation Matrix:\n", df[num_cols].corr())
+
+sns.pairplot(df[num_cols])
+plt.suptitle("Pairplot of Budget, Collection, and YouTube Metrics", y=1.02)
+plt.show()
