@@ -1,0 +1,17 @@
+Draw the line chart using “x” as the output given here import numpy as np x = np.arange(11)
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.arange(11)  # x values from 0 to 10
+
+# Plot the lines
+plt.plot(x, x + 2, label='x+2')  # Blue line
+plt.plot(x, x + 3, label='x+3')  # Orange line
+
+# Add legend
+plt.legend()
+
+# Show the plot
+plt.show()
