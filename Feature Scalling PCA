@@ -1,0 +1,35 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from google.colab import drive
+drive.mount('/content/drive')
+df = pd.read_csv('/content/drive/MyDrive/Incomes/income.csv')
+print(df)
+
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+
+
+# View the first few rows
+print("Original Data:")
+print(df.head())
+
+# Select the numerical features for standardization
+features_to_scale = ['Age', 'Income']
+
+# Initialize the scaler
+scaler = StandardScaler()
+
+# Fit and transform the features
+scaled_features = scaler.fit_transform(df[features_to_scale])
+
+# Create a new DataFrame with scaled values
+scaled_df = pd.DataFrame(scaled_features, columns=[f"{col}_scaled" for col in features_to_scale])
+
+# Concatenate with the original DataFrame
+df_scaled = pd.concat([df, scaled_df], axis=1)
+
+# Display result
+print("\nData with Scaled Features:")
+print(df_scaled.head())
